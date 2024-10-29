@@ -1,22 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetes Prediction</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Enter Patient Details for Diabetes Prediction</h2>
-    <form id="predictionForm">
-        <label>Pregnancies:</label><input type="number" id="Pregnancies"><br>
-        <label>Glucose:</label><input type="number" id="Glucose"><br>
-        <label>Blood Pressure:</label><input type="number" id="BloodPressure"><br>
-        <label>Skin Thickness:</label><input type="number" id="SkinThickness"><br>
-        <label>Insulin:</label><input type="number" id="Insulin"><br>
-        <label>BMI:</label><input type="number" step="0.1" id="BMI"><br>
-        <label>Diabetes Pedigree Function:</label><input type="number" step="0.01" id="DiabetesPedigreeFunction"><br>
-        <label>Age:</label><input type="number" id="Age"><br>
-        <button type="button" onclick="submitData()">Predict</button>
-    </form>
-    <div id="result"></div>
+
+    <div class="container">
+        <h2>Diabetes Prediction</h2>
+        <form id="predictionForm">
+            <label for="Pregnancies">Pregnancies:</label>
+            <input type="number" id="Pregnancies" placeholder="Enter number of pregnancies">
+            
+            <label for="Glucose">Glucose:</label>
+            <input type="number" id="Glucose" placeholder="Enter glucose level">
+            
+            <label for="BloodPressure">Blood Pressure:</label>
+            <input type="number" id="BloodPressure" placeholder="Enter blood pressure">
+            
+            <label for="SkinThickness">Skin Thickness:</label>
+            <input type="number" id="SkinThickness" placeholder="Enter skin thickness">
+            
+            <label for="Insulin">Insulin:</label>
+            <input type="number" id="Insulin" placeholder="Enter insulin level">
+            
+            <label for="BMI">BMI:</label>
+            <input type="number" step="0.1" id="BMI" placeholder="Enter BMI">
+            
+            <label for="DiabetesPedigreeFunction">Diabetes Pedigree Function:</label>
+            <input type="number" step="0.01" id="DiabetesPedigreeFunction" placeholder="Enter DPF">
+            
+            <label for="Age">Age:</label>
+            <input type="number" id="Age" placeholder="Enter age">
+
+            <button type="button" onclick="submitData()">Predict</button>
+        </form>
+        <div id="result"></div>
+    </div>
 
     <script>
         function submitData() {
