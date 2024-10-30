@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib  # Import joblib for loading the model
-
 # Load your trained model
 model = joblib.load('modelaws.joblib')  # Ensure the path to your joblib model is correct
 
