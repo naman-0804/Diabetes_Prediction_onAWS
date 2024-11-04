@@ -1,4 +1,2 @@
 joblib
 pandas
-numpy
-scikit-learn  # If you are using scikit-learn for model training or prediction
