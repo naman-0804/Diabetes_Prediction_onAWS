@@ -11,6 +11,9 @@
     <div class="container">
         <h2>Diabetes Prediction</h2>
         <form id="predictionForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
             <label for="Pregnancies">Pregnancies:</label>
             <input type="number" id="Pregnancies" placeholder="Enter number of pregnancies" required>
             
@@ -43,6 +46,7 @@
     <script>
         function submitData() {
             const data = {
+                email: document.getElementById("email").value,  // Email integration
                 Pregnancies: Number(document.getElementById("Pregnancies").value),
                 Glucose: Number(document.getElementById("Glucose").value),
                 BloodPressure: Number(document.getElementById("BloodPressure").value),
@@ -53,10 +57,10 @@
                 Age: Number(document.getElementById("Age").value),
             };
 
-            // Log the data to debug
+            // Log the data for debugging
             console.log("Data being sent:", data);
 
-            fetch('http://34.234.90.74:5000/predict', {
+            fetch('http://54.210.56.112:5000/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -68,7 +72,9 @@
                 return response.json();
             })
             .then(result => {
-                document.getElementById("result").innerText = 'Prediction Outcome: ' + result['Predicted Label'];
+                document.getElementById("result").innerText = 
+                    'Prediction Outcome: ' + result['Predicted Label'] + 
+                    '. A detailed email has been sent to you.';
             })
             .catch(error => {
                 console.error('Error:', error);

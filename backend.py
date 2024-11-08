@@ -3,24 +3,29 @@ import boto3
 import pandas as pd
 import joblib
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
 # Initialize S3 client and specify model location
 s3 = boto3.client('s3')
 bucket_name = 'mymodelaws'
 model_key = 'modelaws.joblib'
-download_path = '/tmp/modelaws.joblib'  # Path to temporarily store model on the server
+download_path = '/tmp/modelaws.joblib'  # Temporary storage for model
+
+# SNS Client
+sns_client = boto3.client('sns', region_name='us-east-1')
+sns_topic_arn = 'arn:aws:sns:us-east-1:009160066859:diabetesnotif'
 
 # Download and load the model when the server starts
 try:
     s3.download_file(bucket_name, model_key, download_path)
     model = joblib.load(download_path)
+    print("Model loaded successfully.")
 except Exception as e:
     print(f"Error loading model: {str(e)}")
-    model = None  # To ensure the app fails if model loading fails
+    model = None
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -30,34 +35,61 @@ def health_check():
 def predict():
     if not model:
         return jsonify({'error': 'Model could not be loaded'}), 500
-    
-    try:
-        # Parse JSON body from POST request
-        data = request.get_json()
-        input_data = [[
-            data.get('Pregnancies', 0),
-            data.get('Glucose', 0),
-            data.get('BloodPressure', 0),
-            data.get('SkinThickness', 0),
-            data.get('Insulin', 0),
-            data.get('BMI', 0.0),
-            data.get('DiabetesPedigreeFunction', 0.0),
-            data.get('Age', 0)
-        ]]
 
-        # Convert input to DataFrame
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid or missing JSON data'}), 400
+
+        email = data.get('email')
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+
+        # Extract the rest of the input data
+        pregnancies = int(data.get('Pregnancies', 0))
+        glucose = int(data.get('Glucose', 0))
+        blood_pressure = int(data.get('BloodPressure', 0))
+        skin_thickness = int(data.get('SkinThickness', 0))
+        insulin = int(data.get('Insulin', 0))
+        bmi = float(data.get('BMI', 0.0))
+        pedigree = float(data.get('DiabetesPedigreeFunction', 0.0))
+        age = int(data.get('Age', 0))
+
+        # Check if email is already subscribed
+        response = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
+        subscriptions = response.get('Subscriptions', [])
+        if not any(sub['Endpoint'] == email for sub in subscriptions):
+            sns_client.subscribe(
+                TopicArn=sns_topic_arn,
+                Protocol='email',
+                Endpoint=email
+            )
+
+        # Prepare input data for prediction
+        input_data = [[pregnancies, glucose, blood_pressure, skin_thickness,
+                       insulin, bmi, pedigree, age]]
         input_df = pd.DataFrame(input_data, columns=[
             'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
             'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'
         ])
-        
-        # Make a prediction
+
+        # Make prediction
         prediction = model.predict(input_df)
-        predicted_label = int(prediction[0])  # Binary classification: 0 or 1
+        predicted_label = int(prediction[0])  # 0 or 1
+
+        # Send SNS notification
+        message = f"Diabetes Prediction Result: {predicted_label}"
+        sns_client.publish(
+            TopicArn=sns_topic_arn,
+            Message=message,
+            Subject='Diabetes Prediction Result'
+        )
 
         return jsonify({'Predicted Label': predicted_label})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000,debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
