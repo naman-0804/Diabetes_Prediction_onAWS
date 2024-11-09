@@ -4,6 +4,7 @@ import pandas as pd
 import joblib
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -17,6 +18,11 @@ download_path = '/tmp/modelaws.joblib'  # Temporary storage for model
 # SNS Client
 sns_client = boto3.client('sns', region_name='us-east-1')
 sns_topic_arn = 'arn:aws:sns:us-east-1:009160066859:diabetesnotif'
+
+# DynamoDB Client
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+table_name = 'DiabetesPrediction'  # DynamoDB table name to store results
+table = dynamodb.Table(table_name)
 
 # Download and load the model when the server starts
 try:
@@ -85,6 +91,24 @@ def predict():
             Message=message,
             Subject='Diabetes Prediction Result'
         )
+
+        # Store the prediction result in DynamoDB
+        result_data = {
+            'email': email,
+            'timestamp': datetime.utcnow().isoformat(),
+            'Pregnancies': pregnancies,
+            'Glucose': glucose,
+            'BloodPressure': blood_pressure,
+            'SkinThickness': skin_thickness,
+            'Insulin': insulin,
+            'BMI': bmi,
+            'DiabetesPedigreeFunction': pedigree,
+            'Age': age,
+            'PredictedOutcome': predicted_label
+        }
+
+        # Save to DynamoDB
+        table.put_item(Item=result_data)
 
         return jsonify({'Predicted Label': predicted_label})
 
