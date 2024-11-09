@@ -63,8 +63,7 @@
             fetch('https://0iz9u1fbwb.execute-api.us-east-1.amazonaws.com/access/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-                mode: 'no-cors'
+                body: JSON.stringify(data)
             })
             .then(response => {
                 if (!response.ok) {
