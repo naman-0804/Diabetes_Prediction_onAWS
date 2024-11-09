@@ -60,7 +60,7 @@
             // Log the data for debugging
             console.log("Data being sent:", data);
 
-            fetch('http://54.82.2.9:5000/predict', {
+            fetch('https://c4jfyoti8b.execute-api.us-east-1.amazonaws.com/access/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
