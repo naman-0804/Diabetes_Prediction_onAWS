@@ -13,7 +13,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 350px;  /* Increased container width for better spacing */
 }
 
 h2 {
@@ -21,17 +21,23 @@ h2 {
     color: #333;
 }
 
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;  /* Increased margin between inputs */
+}
+
 label {
-    display: block;
-    margin-bottom: 8px;
+    display: inline-block;
+    margin-right: 20px;  /* Increased space between label and input */
+    width: 130px;  /* Adjusts the label width */
     font-size: 14px;
     color: #555;
 }
 
-input[type="number"] {
-    width: 100%;
+input[type="number"], input[type="email"] {
+    flex-grow: 1;
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
@@ -57,4 +63,14 @@ button:hover {
     margin-top: 20px;
     font-size: 18px;
     color: #333;
+}
+
+.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
 }

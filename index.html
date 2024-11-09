@@ -11,32 +11,50 @@
     <div class="container">
         <h2>Diabetes Prediction</h2>
         <form id="predictionForm">
-            <label for="email">Email:</label>
-            <input type="email" id="email" placeholder="Enter your email" required>
-
-            <label for="Pregnancies">Pregnancies:</label>
-            <input type="number" id="Pregnancies" placeholder="Enter number of pregnancies" required>
+            <div class="input-container">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
             
-            <label for="Glucose">Glucose:</label>
-            <input type="number" id="Glucose" placeholder="Enter glucose level" required>
+            <div class="input-container">
+                <label for="Pregnancies">Pregnancies:</label>
+                <input type="number" id="Pregnancies" placeholder="Enter number of pregnancies" required>
+            </div>
             
-            <label for="BloodPressure">Blood Pressure:</label>
-            <input type="number" id="BloodPressure" placeholder="Enter blood pressure" required>
+            <div class="input-container">
+                <label for="Glucose">Glucose:</label>
+                <input type="number" id="Glucose" placeholder="Enter glucose level" required>
+            </div>
             
-            <label for="SkinThickness">Skin Thickness:</label>
-            <input type="number" id="SkinThickness" placeholder="Enter skin thickness" required>
+            <div class="input-container">
+                <label for="BloodPressure">Blood Pressure:</label>
+                <input type="number" id="BloodPressure" placeholder="Enter blood pressure" required>
+            </div>
             
-            <label for="Insulin">Insulin:</label>
-            <input type="number" id="Insulin" placeholder="Enter insulin level" required>
+            <div class="input-container">
+                <label for="SkinThickness">Skin Thickness:</label>
+                <input type="number" id="SkinThickness" placeholder="Enter skin thickness" required>
+            </div>
             
-            <label for="BMI">BMI:</label>
-            <input type="number" step="0.1" id="BMI" placeholder="Enter BMI" required>
+            <div class="input-container">
+                <label for="Insulin">Insulin:</label>
+                <input type="number" id="Insulin" placeholder="Enter insulin level" required>
+            </div>
             
-            <label for="DiabetesPedigreeFunction">Diabetes Pedigree Function:</label>
-            <input type="number" step="0.01" id="DiabetesPedigreeFunction" placeholder="Enter DPF" required>
+            <div class="input-container">
+                <label for="BMI">BMI:</label>
+                <input type="number" step="0.1" id="BMI" placeholder="Enter BMI" required>
+            </div>
             
-            <label for="Age">Age:</label>
-            <input type="number" id="Age" placeholder="Enter age" required>
+            <div class="input-container">
+                <label for="DiabetesPedigreeFunction">Diabetes Pedigree Function:</label>
+                <input type="number" step="0.01" id="DiabetesPedigreeFunction" placeholder="Enter DPF" required>
+            </div>
+            
+            <div class="input-container">
+                <label for="Age">Age:</label>
+                <input type="number" id="Age" placeholder="Enter age" required>
+            </div>
 
             <button type="button" onclick="submitData()">Predict</button>
         </form>
@@ -77,9 +95,12 @@
                     '. A detailed email has been sent to you.';
             })
             .catch(error => {
-                console.error('Error:', error);
-                document.getElementById("result").innerText = 'Error: ' + error.message;
-            });
+            console.error('Error:', error);
+            const resultElement = document.getElementById("result");
+            resultElement.innerText = 'Error: ' + error.message;
+            resultElement.classList.add("error");  // Add the error styling
+        });
+
         }
     </script>
 </body>
